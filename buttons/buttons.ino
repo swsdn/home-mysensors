@@ -9,7 +9,7 @@
 #include <Bounce2.h>
 
 // Enable repeater functionality for this node
-// #define MY_REPEATER_FEATURE/
+// #define MY_REPEATER_FEATURE
 
 // #define NUMBER_OF_BUTTONS 30
 // #define FIRST_BUTTON_PIN 24
@@ -31,8 +31,7 @@ void before() {
 }
 
 void setup() { 
-  delay(3000); // Setup locally attached sensors
-  
+  delay(3000);  
   for (int i = 0 ; i < NUMBER_OF_BUTTONS; i++) {
     int pin = i + FIRST_BUTTON_PIN;
     configure(*buttons[i], pin);
@@ -61,7 +60,6 @@ void loop() {
     if (buttons[i]->update()) {
       int pin = i + FIRST_BUTTON_PIN;
       if (buttons[i]->pressed()) {
-//        saveState(i, !loadState(i));
         state[i] = !state[i];
         send(messages[i]->set(state[i]));
       }
