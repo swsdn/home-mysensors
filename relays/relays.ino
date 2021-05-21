@@ -10,10 +10,10 @@
 // Enable repeater functionality for this node
 #define MY_REPEATER_FEATURE
 
-#define FIRST_RELAY_PIN  4
-#define NUMBER_OF_RELAYS 2
-#define RELAY_ON  0
-#define RELAY_OFF 1
+#define FIRST_RELAY_PIN  22
+#define NUMBER_OF_RELAYS 32
+#define RELAY_ON LOW
+#define RELAY_OFF HIGH
 
 MyMessage *messages[NUMBER_OF_RELAYS];
 bool state[NUMBER_OF_RELAYS];
@@ -21,7 +21,7 @@ long saveStateTime = millis();
 
 void before() { 
   for (int sensor=0, pin=FIRST_RELAY_PIN; sensor < NUMBER_OF_RELAYS; sensor++, pin++) {
-    pinMode(pin, INPUT_PULLUP);   
+    pinMode(pin, OUTPUT);   
     messages[sensor] = new MyMessage(sensor, V_STATUS);
     state[sensor] = loadState(sensor);
     digitalWrite(pin, state[sensor] ? RELAY_ON : RELAY_OFF);
@@ -65,13 +65,17 @@ void saveStateToEeprom() {
 void receive(const MyMessage &message) {
   // We only expect one type of message from controller. But we better check anyway.
   if (message.type==V_STATUS) {
-     // Change relay state
-     state[message.sensor] = message.getBool() ? RELAY_ON : RELAY_OFF;
-     digitalWrite(message.sensor + FIRST_RELAY_PIN, state[message.sensor]);
-     // Store state in eeprom
+     state[message.sensor] = message.getBool();
+     int pin = message.sensor + FIRST_RELAY_PIN;
+     bool newState = state[message.sensor] ? RELAY_ON : RELAY_OFF;
+     digitalWrite(pin, newState);
      saveState(message.sensor, message.getBool());
+     
      // Write some debug info
-     Serial.print("Incoming change for sensor:");
+     Serial.print(pin);
+     Serial.print("/");
+     Serial.print(newState);
+     Serial.print(" Incoming change for sensor:");
      Serial.print(message.sensor);
      Serial.print(", New status: ");
      Serial.println(message.getBool());
