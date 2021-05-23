@@ -5,7 +5,8 @@
 #define MY_GATEWAY_SERIAL
 
 #include <SPI.h>
-#include <MySensors.h>  
+#include <MySensors.h>
+#include <Wire.h>
 
 // Enable repeater functionality for this node
 #define MY_REPEATER_FEATURE
@@ -14,6 +15,8 @@
 #define NUMBER_OF_RELAYS 32
 #define RELAY_ON LOW
 #define RELAY_OFF HIGH
+
+#define I2C_RECEIVER 4
 
 MyMessage *messages[NUMBER_OF_RELAYS];
 bool state[NUMBER_OF_RELAYS];
@@ -28,7 +31,9 @@ void before() {
   }
 }
 
-void setup() { 
+void setup() {
+  Wire.begin(4);
+  Wire.onReceive(i2cReceive);
   delay(3000);
 }
 
@@ -80,4 +85,15 @@ void receive(const MyMessage &message) {
      Serial.print(", New status: ");
      Serial.println(message.getBool());
    } 
+}
+
+void i2cReceive(int howMany) {
+  Serial.print("Received ");
+  Serial.print(howMany);
+  Serial.print(" bytes, ");
+  while(Wire.available() > 0) {
+    int c = Wire.read();
+    Serial.print(c);Serial.print(", ");
+  }
+  Serial.println("end");
 }

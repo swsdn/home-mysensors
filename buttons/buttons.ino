@@ -7,15 +7,15 @@
 #include <SPI.h>
 #include <MySensors.h>  
 #include <Bounce2.h>
+#include <Wire.h>
 
 // Enable repeater functionality for this node
 // #define MY_REPEATER_FEATURE
 
-// #define NUMBER_OF_BUTTONS 30
-// #define FIRST_BUTTON_PIN 24
+#define NUMBER_OF_BUTTONS 30
+#define FIRST_BUTTON_PIN 24
 
-#define NUMBER_OF_BUTTONS 10
-#define FIRST_BUTTON_PIN 4
+#define I2C_RECEIVER 4
 
 Bounce2::Button *buttons[NUMBER_OF_BUTTONS];
 MyMessage *messages[NUMBER_OF_BUTTONS];
@@ -30,8 +30,9 @@ void before() {
   }
 }
 
-void setup() { 
-  delay(3000);  
+void setup() {
+  Wire.begin(); 
+  delay(3000);
   for (int i = 0 ; i < NUMBER_OF_BUTTONS; i++) {
     int pin = i + FIRST_BUTTON_PIN;
     configure(*buttons[i], pin);
@@ -62,6 +63,7 @@ void loop() {
       if (buttons[i]->pressed()) {
         state[i] = !state[i];
         send(messages[i]->set(state[i]));
+        i2cSend(i, state[i]);
       }
     }
   }
@@ -70,6 +72,13 @@ void loop() {
     saveStateToEeprom();
     saveStateTime = millis();
   }
+}
+
+void i2cSend(int sensor, bool state) {
+  Wire.beginTransmission(I2C_RECEIVER);
+  Wire.write(sensor);
+  Wire.write(state);
+  Wire.endTransmission();
 }
 
 void saveStateToEeprom() {
