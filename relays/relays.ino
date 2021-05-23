@@ -21,6 +21,11 @@
 MyMessage *messages[NUMBER_OF_RELAYS];
 bool state[NUMBER_OF_RELAYS];
 long saveStateTime = millis();
+byte buttons[] = {
+   0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 
+  10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 
+  20, 21, 22, 23, 24, 25, 26, 27, 3, 0
+};
 
 void before() { 
   for (int sensor=0, pin=FIRST_RELAY_PIN; sensor < NUMBER_OF_RELAYS; sensor++, pin++) {
@@ -74,7 +79,6 @@ void receive(const MyMessage &message) {
      int pin = message.sensor + FIRST_RELAY_PIN;
      bool newState = state[message.sensor] ? RELAY_ON : RELAY_OFF;
      digitalWrite(pin, newState);
-     saveState(message.sensor, message.getBool());
      
      // Write some debug info
      Serial.print(pin);
@@ -90,10 +94,18 @@ void receive(const MyMessage &message) {
 void i2cReceive(int howMany) {
   Serial.print("Received ");
   Serial.print(howMany);
-  Serial.print(" bytes, ");
-  while(Wire.available() > 0) {
-    int c = Wire.read();
-    Serial.print(c);Serial.print(", ");
-  }
-  Serial.println("end");
+  Serial.print(" bytes,");
+  int button = Wire.read();
+  bool newState = Wire.read();
+  int sensor = buttons[button];
+
+  Serial.print(" button ");
+  Serial.print(button);
+  Serial.print(" sensor ");
+  Serial.print(sensor);
+  Serial.print(" newState ");
+  Serial.println(newState);
+  state[sensor] = newState;
+  int pin = sensor + FIRST_RELAY_PIN;
+  digitalWrite(pin, state[sensor] ? RELAY_ON : RELAY_OFF);
 }

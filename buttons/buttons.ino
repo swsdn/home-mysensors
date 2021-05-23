@@ -104,9 +104,11 @@ void printDebugToSerial(Bounce2::Button *button, int pin) {
 void receive(const MyMessage &message) {
   // We only expect one type of message from controller. But we better check anyway.
   if (message.type==V_STATUS) {
-     Serial.print("Incoming change for sensor:");
-     Serial.print(message.sensor);
-     Serial.print(", New status: ");
-     Serial.println(message.getBool());
-   } 
+    state[message.sensor] = message.getBool();
+       
+    Serial.print("Incoming change for sensor:");
+    Serial.print(message.sensor);
+    Serial.print(", New status: ");
+    Serial.println(message.getBool());
+  } 
 }
