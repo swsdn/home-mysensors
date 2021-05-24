@@ -14,6 +14,8 @@
 
 #define NUMBER_OF_BUTTONS 30
 #define FIRST_BUTTON_PIN 24
+#define SAVE_STATE_INTERVAL 10000
+#define INITIAL_DELAY 10000
 
 #define I2C_RECEIVER 4
 
@@ -32,7 +34,7 @@ void before() {
 
 void setup() {
   Wire.begin(); 
-  delay(3000);
+  delay(INITIAL_DELAY);
   for (int i = 0 ; i < NUMBER_OF_BUTTONS; i++) {
     int pin = i + FIRST_BUTTON_PIN;
     configure(*buttons[i], pin);
@@ -47,11 +49,8 @@ void configure(Bounce2::Button &btn, int pin) {
 
 void presentation()  
 {   
-  // Send the sketch version information to the gateway and Controller
   sendSketchInfo("Buttons", "1.0");
-
   for (int sensor = 0; sensor < NUMBER_OF_BUTTONS; sensor++) {
-    // Register all sensors to gw (they will be created as child devices)
     present(sensor, S_BINARY);
   }
 }
@@ -68,7 +67,7 @@ void loop() {
     }
   }
 
-  if (millis() - saveStateTime > 60000) {
+  if (millis() - saveStateTime > SAVE_STATE_INTERVAL) {
     saveStateToEeprom();
     saveStateTime = millis();
   }
@@ -102,9 +101,9 @@ void printDebugToSerial(Bounce2::Button *button, int pin) {
 }
 
 void receive(const MyMessage &message) {
-  // We only expect one type of message from controller. But we better check anyway.
-  if (message.type==V_STATUS) {
+  if (message.type == V_STATUS && message.sensor < NUMBER_OF_BUTTONS) {
     state[message.sensor] = message.getBool();
+    i2cSend(message.sensor, state[message.sensor]);
        
     Serial.print("Incoming change for sensor:");
     Serial.print(message.sensor);
