@@ -8,17 +8,41 @@
 
 #define RELAY_UNKNOWN         0
 // BOARD 1
+#define RELAY_24              24
+#define RELAY_25              25
+#define RELAY_26              26
+#define RELAY_27              27
+#define RELAY_28              28
+#define RELAY_29              29
+#define RELAY_30              30
+#define RELAY_31              31
 // BOARD 2
+#define RELAY_LIVING_SCONCE_1   8
+#define RELAY_LIVING_SCONCE_2   9
+#define RELAY_LIVING_1         10
+#define RELAY_HALL_2           11
+#define RELAY_LIVING_2         12
+#define RELAY_BED_3_1          13
+#define RELAY_BED_3_2          14
+#define RELAY_BED_2_1          15
 // BOARD 3
+#define RELAY_BED_2_2          16
+#define RELAY_BED_1_SCONCE_1   17
+#define RELAY_BED_1_SCONCE_2   18
+#define RELAY_BED_1_MAIN_1     19
+#define RELAY_BED_1_MAIN_2     20
+#define RELAY_DINING           21
+#define RELAY_HALL_1           22
+#define RELAY_ENTRY_1          23
 // BOARD 4
-#define RELAY_HALL_1          0
-#define RELAY_BATH_2_SCONCE_1 1
-#define RELAY_BATH_2_SCONCE_2 2
-#define RELAY_BATH_2_MAIN     3
-#define RELAY_BATH_1_SCONCE_1 4
-#define RELAY_BATH_1_SCONCE_2 5
-#define RELAY_BATH_1_MAIN     6
-#define RELAY_BATH_1_MAIN     7
+#define RELAY_ENTRY_2          0
+#define RELAY_BATH_2_SCONCE_1  1
+#define RELAY_BATH_2_SCONCE_2  2
+#define RELAY_BATH_2_MAIN      3
+#define RELAY_BATH_1_SCONCE_1  4
+#define RELAY_BATH_1_SCONCE_2  5
+#define RELAY_BATH_1_MAIN_1    6
+#define RELAY_BATH_1_MAIN_2    7
 
 #include <SPI.h>
 #include <MySensors.h>
@@ -39,12 +63,6 @@
 MyMessage *messages[NUMBER_OF_RELAYS];
 bool state[NUMBER_OF_RELAYS];
 long saveStateTime = millis();
-
-// byte relaysOfButton[] = {
-//    0,  1,  2,  3,  4,  5,  6,  7,  8,  9,
-//   10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
-//   20, 21, 22, 23, 24, 25, 26, 27, 3, 0
-// };
 
 struct Button {
     byte *relays;
@@ -79,8 +97,8 @@ byte BUTTON_24_[] = {};
 byte BUTTON_25_[] = {};
 byte BUTTON_26_[] = {};
 byte BUTTON_27_[] = {};
-byte BUTTON_28_ENTRY_1[] = { RELAY_HALL_1, RELAY_BATH_2_MAIN, RELAY_BATH_1_MAIN };
-byte BUTTON_29_ENTRY_2[] = { RELAY_HALL_1 };
+byte BUTTON_28_ENTRY_1[] = { RELAY_BED_2_1, RELAY_BED_3_1, RELAY_BED_1_MAIN_1 };
+byte BUTTON_29_ENTRY_2[] = { RELAY_ENTRY_2, RELAY_HALL_1, RELAY_HALL_2, RELAY_BATH_2_MAIN, RELAY_BATH_1_MAIN_2 };
 
 Button buttonRelays[] = {
     { BUTTON_00_, 0 },
@@ -180,23 +198,18 @@ void printDebugToSerial(int pin, bool newState, MyMessage message) {
 void i2cReceive(int howMany) {
   int buttonId = Wire.read();
   bool newState = Wire.read();
-//   int relay = relaysOfButton[buttonId];
   Button button = buttonRelays[buttonId];
   for (int i = 0; i < button.numElements; i++) {
     state[button.relays[i]] = newState;
     int pin = button.relays[i] + FIRST_RELAY_PIN;
     digitalWrite(pin, state[button.relays[i]] ? RELAY_ON : RELAY_OFF);
-    printDebugToSerial(howMany, buttonId, state[button.relays[i]], newState);
+    printDebugToSerial(pin, buttonId, state[button.relays[i]], newState);
   }
-//   state[relay] = newState;
-//   int pin = relay + FIRST_RELAY_PIN;
-//   digitalWrite(pin, state[relay] ? RELAY_ON : RELAY_OFF);
-//   printDebugToSerial(howMany, button, relay, newState);
 }
 
-void printDebugToSerial(int howMany, int button, int relay, bool newState) {
-  Serial.print("Received ");
-  Serial.print(howMany);
+void printDebugToSerial(int pin, int button, int relay, bool newState) {
+  Serial.print("pin ");
+  Serial.print(pin);
   Serial.print(" bytes,");
   Serial.print(" button ");
   Serial.print(button);
