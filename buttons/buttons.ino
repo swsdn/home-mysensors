@@ -12,8 +12,8 @@
 // Enable repeater functionality for this node
 // #define MY_REPEATER_FEATURE
 
-#define NUMBER_OF_BUTTONS 30
-#define FIRST_BUTTON_PIN 24
+#define NUMBER_OF_BUTTONS 32
+#define FIRST_BUTTON_PIN 22
 #define SAVE_STATE_INTERVAL 10000
 #define INITIAL_DELAY 10000
 

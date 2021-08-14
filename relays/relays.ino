@@ -6,16 +6,15 @@
 // Enable serial gateway
 #define MY_GATEWAY_SERIAL
 
-#define RELAY_UNKNOWN         0
 // BOARD 1
-#define RELAY_24              24
-#define RELAY_25              25
-#define RELAY_26              26
-#define RELAY_27              27
-#define RELAY_28              28
-#define RELAY_29              29
-#define RELAY_30              30
-#define RELAY_31              31
+#define RELAY_24               24
+#define RELAY_25               25
+#define RELAY_26               26
+#define RELAY_27               27
+#define RELAY_28               28
+#define RELAY_29_KITCHEN       29
+#define RELAY_30_KITCHEN       30
+#define RELAY_31_KITCHEN       31
 // BOARD 2
 #define RELAY_LIVING_SCONCE_1   8
 #define RELAY_LIVING_SCONCE_2   9
@@ -31,11 +30,11 @@
 #define RELAY_BED_1_SCONCE_2   18
 #define RELAY_BED_1_MAIN_1     19
 #define RELAY_BED_1_MAIN_2     20
-#define RELAY_DINING           21
-#define RELAY_HALL_1           22
-#define RELAY_ENTRY_1          23
+#define RELAY_ENTRY_1          21
+#define RELAY_ENTRY_2          22
+#define RELAY_DINING           23
 // BOARD 4
-#define RELAY_ENTRY_2          0
+#define RELAY_HALL_1           0
 #define RELAY_BATH_2_SCONCE_1  1
 #define RELAY_BATH_2_SCONCE_2  2
 #define RELAY_BATH_2_MAIN      3
@@ -69,68 +68,72 @@ struct Button {
     int numElements;
 };
 
-byte BUTTON_00_[] = {};
-byte BUTTON_01_[] = {};
-byte BUTTON_02_[] = {};
-byte BUTTON_03_[] = {};
-byte BUTTON_04_[] = {};
-byte BUTTON_05_[] = {};
-byte BUTTON_06_[] = {};
-byte BUTTON_07_[] = {};
-byte BUTTON_08_[] = {};
-byte BUTTON_09_[] = {};
-byte BUTTON_10_[] = {};
-byte BUTTON_11_[] = {};
-byte BUTTON_12_[] = {};
-byte BUTTON_13_[] = {};
-byte BUTTON_14_[] = {};
-byte BUTTON_15_[] = {};
-byte BUTTON_16_[] = {};
-byte BUTTON_17_[] = {};
-byte BUTTON_18_[] = {};
-byte BUTTON_19_[] = {};
-byte BUTTON_20_[] = {};
-byte BUTTON_21_[] = {};
-byte BUTTON_22_[] = {};
-byte BUTTON_23_[] = {};
-byte BUTTON_24_[] = {};
-byte BUTTON_25_[] = {};
-byte BUTTON_26_[] = {};
-byte BUTTON_27_[] = {};
-byte BUTTON_28_ENTRY_1[] = { RELAY_BED_2_1, RELAY_BED_3_1, RELAY_BED_1_MAIN_1 };
-byte BUTTON_29_ENTRY_2[] = { RELAY_ENTRY_2, RELAY_HALL_1, RELAY_HALL_2, RELAY_BATH_2_MAIN, RELAY_BATH_1_MAIN_2 };
+byte BUTTON_00_BATH_1[]  = { RELAY_BATH_1_MAIN_1 };
+byte BUTTON_01_BATH_1[]  = { RELAY_BATH_1_MAIN_2 };
+byte BUTTON_02_BED_1[]   = { RELAY_BED_1_SCONCE_1 };
+byte BUTTON_03_BED_1[]   = { RELAY_BED_1_SCONCE_2 };
+byte BUTTON_04_BED_1[]   = { RELAY_BED_1_MAIN_1 };
+byte BUTTON_05_BED_1[]   = { RELAY_BED_1_MAIN_2 };
+byte BUTTON_06_BED_3[]   = { RELAY_BED_3_1 };
+byte BUTTON_07_BED_3[]   = { RELAY_BED_3_2 };
+byte BUTTON_08_BATH_1[]  = { RELAY_BATH_1_SCONCE_1 };
+byte BUTTON_09_BATH_1[]  = { RELAY_BATH_1_SCONCE_2 };
+byte BUTTON_10_BED_1[]   = { RELAY_BED_1_MAIN_1 };
+byte BUTTON_11_BED_1[]   = { RELAY_BED_1_MAIN_2 };
+byte BUTTON_12_BATH_2[]  = { RELAY_BATH_2_MAIN };
+byte BUTTON_13_BATH_2[]  = { RELAY_BATH_2_SCONCE_1, RELAY_BATH_2_SCONCE_2 };
+byte BUTTON_14_KITCHEN[] = { RELAY_29_KITCHEN, RELAY_30_KITCHEN, RELAY_31_KITCHEN };
+byte BUTTON_15_KITCHEN[] = { RELAY_24, RELAY_25, RELAY_26, RELAY_27, RELAY_28};
+byte BUTTON_16_BATH_2[]  = { RELAY_BATH_2_SCONCE_1 };
+byte BUTTON_17_BATH_2[]  = { RELAY_BATH_2_SCONCE_2 };
+byte BUTTON_18_LIVING[]  = { RELAY_LIVING_SCONCE_1 };
+byte BUTTON_19_LIVING[]  = { RELAY_LIVING_SCONCE_2 };
+byte BUTTON_20_MAIN[]    = { RELAY_DINING };
+byte BUTTON_21_[]        = {};
+byte BUTTON_22_[]        = {};
+byte BUTTON_23_MAIN[]    = { RELAY_HALL_1 };
+byte BUTTON_24_BED_2[]   = { RELAY_BED_2_1 };
+byte BUTTON_25_BED_2[]   = { RELAY_BED_2_2 };
+byte BUTTON_26_MAIN[]    = { };
+byte BUTTON_27_MAIN[]    = { RELAY_HALL_2 };
+byte BUTTON_28_MAIN[]    = { RELAY_LIVING_1 };
+byte BUTTON_29_MAIN[]    = { RELAY_LIVING_2 };
+byte BUTTON_30_ENTRY[]   = { RELAY_ENTRY_1 };
+byte BUTTON_31_ENTRY[]   = { RELAY_ENTRY_2 };
 
 Button buttonRelays[] = {
-    { BUTTON_00_, 0 },
-    { BUTTON_01_, 0 },
-    { BUTTON_02_, 0 },
-    { BUTTON_03_, 0 },
-    { BUTTON_04_, 0 },
-    { BUTTON_05_, 0 },
-    { BUTTON_06_, 0 },
-    { BUTTON_07_, 0 },
-    { BUTTON_08_, 0 },
-    { BUTTON_09_, 0 },
-    { BUTTON_10_, 0 },
-    { BUTTON_11_, 0 },
-    { BUTTON_12_, 0 },
-    { BUTTON_13_, 0 },
-    { BUTTON_14_, 0 },
-    { BUTTON_15_, 0 },
-    { BUTTON_16_, 0 },
-    { BUTTON_17_, 0 },
-    { BUTTON_18_, 0 },
-    { BUTTON_19_, 0 },
-    { BUTTON_20_, 0 },
-    { BUTTON_21_, 0 },
-    { BUTTON_22_, 0 },
-    { BUTTON_23_, 0 },
-    { BUTTON_24_, 0 },
-    { BUTTON_25_, 0 },
-    { BUTTON_26_, 0 },
-    { BUTTON_27_, 0 },
-    { BUTTON_28_ENTRY_1, NUM_ELEMENTS(BUTTON_28_ENTRY_1) },
-    { BUTTON_29_ENTRY_2, NUM_ELEMENTS(BUTTON_29_ENTRY_2) }
+    { BUTTON_00_BATH_1,  NUM_ELEMENTS(BUTTON_00_BATH_1) },
+    { BUTTON_01_BATH_1,  NUM_ELEMENTS(BUTTON_01_BATH_1) },
+    { BUTTON_02_BED_1,   NUM_ELEMENTS(BUTTON_02_BED_1) },
+    { BUTTON_03_BED_1,   NUM_ELEMENTS(BUTTON_03_BED_1) },
+    { BUTTON_04_BED_1,   NUM_ELEMENTS(BUTTON_04_BED_1) },
+    { BUTTON_05_BED_1,   NUM_ELEMENTS(BUTTON_05_BED_1) },
+    { BUTTON_06_BED_3,   NUM_ELEMENTS(BUTTON_06_BED_3) },
+    { BUTTON_07_BED_3,   NUM_ELEMENTS(BUTTON_07_BED_3) },
+    { BUTTON_08_BATH_1,  NUM_ELEMENTS(BUTTON_08_BATH_1) },
+    { BUTTON_09_BATH_1,  NUM_ELEMENTS(BUTTON_09_BATH_1) },
+    { BUTTON_10_BED_1,   NUM_ELEMENTS(BUTTON_10_BED_1) },
+    { BUTTON_11_BED_1,   NUM_ELEMENTS(BUTTON_11_BED_1) },
+    { BUTTON_12_BATH_2,  NUM_ELEMENTS(BUTTON_12_BATH_2) },
+    { BUTTON_13_BATH_2,  NUM_ELEMENTS(BUTTON_13_BATH_2) },
+    { BUTTON_14_KITCHEN, NUM_ELEMENTS(BUTTON_14_KITCHEN) },
+    { BUTTON_15_KITCHEN, NUM_ELEMENTS(BUTTON_15_KITCHEN) },
+    { BUTTON_16_BATH_2,  NUM_ELEMENTS(BUTTON_16_BATH_2) },
+    { BUTTON_17_BATH_2,  NUM_ELEMENTS(BUTTON_17_BATH_2) },
+    { BUTTON_18_LIVING,  NUM_ELEMENTS(BUTTON_18_LIVING) },
+    { BUTTON_19_LIVING,  NUM_ELEMENTS(BUTTON_19_LIVING) },
+    { BUTTON_20_MAIN,    NUM_ELEMENTS(BUTTON_20_MAIN) },
+    { BUTTON_21_,        NUM_ELEMENTS(BUTTON_21_) },
+    { BUTTON_22_,        NUM_ELEMENTS(BUTTON_22_) },
+    { BUTTON_23_MAIN,    NUM_ELEMENTS(BUTTON_23_MAIN) },
+    { BUTTON_24_BED_2,   NUM_ELEMENTS(BUTTON_24_BED_2) },
+    { BUTTON_25_BED_2,   NUM_ELEMENTS(BUTTON_25_BED_2) },
+    { BUTTON_26_MAIN,    NUM_ELEMENTS(BUTTON_26_MAIN) },
+    { BUTTON_27_MAIN,    NUM_ELEMENTS(BUTTON_27_MAIN) },
+    { BUTTON_28_MAIN,    NUM_ELEMENTS(BUTTON_28_MAIN) },
+    { BUTTON_29_MAIN,    NUM_ELEMENTS(BUTTON_29_MAIN) },
+    { BUTTON_30_ENTRY,   NUM_ELEMENTS(BUTTON_30_ENTRY) },
+    { BUTTON_31_ENTRY,   NUM_ELEMENTS(BUTTON_31_ENTRY) }
 };
 
 void before() { 
