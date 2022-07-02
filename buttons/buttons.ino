@@ -43,7 +43,7 @@ void loop() {
         i2cSend(i);
       }
       if (btn->read() == LOW && btn->currentDuration() > 1000) {
-        printDebugToSerial(btn, pin)
+        printDebugToSerial(btn, pin);
       }
     }
   }
