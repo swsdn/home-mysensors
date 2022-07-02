@@ -45,9 +45,9 @@ void loop() {
   }
 }
 
-void i2cSend(int sensor) {
+void i2cSend(int button) {
   Wire.beginTransmission(I2C_RECEIVER);
-  Wire.write(sensor);
+  Wire.write(button);
   Wire.endTransmission();
 }
 
