@@ -7,14 +7,14 @@
 #define MY_GATEWAY_SERIAL
 
 // BOARD 1
-#define RELAY_24               24
-#define RELAY_25               25
-#define RELAY_26               26
-#define RELAY_27               27
-#define RELAY_28               28
-#define RELAY_29_KITCHEN       29
-#define RELAY_30_KITCHEN       30
-#define RELAY_31_KITCHEN       31
+#define RELAY_TV               24
+#define RELAY_KITCHEN_SCONCE_1 25
+#define RELAY_KITCHEN_SCONCE_2 26
+#define RELAY_KITCHEN_SCONCE_3 27
+#define RELAY_KITCHEN_SCONCE_4 28
+#define RELAY_KITCHEN_MAIN_1   29
+#define RELAY_KITCHEN_MAIN_2   30
+#define RELAY_KITCHEN_MAIN_3   31
 // BOARD 2
 #define RELAY_LIVING_SCONCE_1   8
 #define RELAY_LIVING_SCONCE_2   9
@@ -71,10 +71,10 @@ struct Button {
 // in comments physical buttons starting from left
 byte BUTTON_00_BATH_1[]  = { RELAY_BATH_1_MAIN_1, RELAY_BATH_1_MAIN_2 };
 byte BUTTON_01_BATH_1[]  = { RELAY_BATH_1_MAIN_1, RELAY_BATH_1_MAIN_2 };
-byte BUTTON_02_BED_1[]   = { RELAY_BED_1_SCONCE_1 };
-byte BUTTON_03_BED_1[]   = { RELAY_BED_1_SCONCE_2 };
-byte BUTTON_04_BED_1[]   = { RELAY_BED_1_MAIN_1, RELAY_BED_1_MAIN_2 };
-byte BUTTON_05_BED_1[]   = { RELAY_BED_1_MAIN_1, RELAY_BED_1_MAIN_2 };
+byte BUTTON_02_BED_1[]   = { RELAY_BED_1_MAIN_1, RELAY_BED_1_MAIN_2 };
+byte BUTTON_03_BED_1[]   = { RELAY_BED_1_MAIN_1, RELAY_BED_1_MAIN_2 };
+byte BUTTON_04_BED_1[]   = { RELAY_BED_1_SCONCE_1 };
+byte BUTTON_05_BED_1[]   = { RELAY_BED_1_SCONCE_2 };
 byte BUTTON_06_BED_3[]   = { RELAY_BED_3_1, RELAY_BED_3_2 };
 byte BUTTON_07_BED_3[]   = { RELAY_BED_3_1, RELAY_BED_3_2 };
 byte BUTTON_08_BATH_1[]  = { RELAY_BATH_1_SCONCE_1 };
@@ -83,23 +83,23 @@ byte BUTTON_10_BED_1[]   = { RELAY_BED_1_MAIN_1, RELAY_BED_1_MAIN_2 };
 byte BUTTON_11_BED_1[]   = { RELAY_BED_1_MAIN_1, RELAY_BED_1_MAIN_2 };
 byte BUTTON_12_BATH_2[]  = { RELAY_BATH_2_MAIN };
 byte BUTTON_13_BATH_2[]  = { RELAY_BATH_2_MAIN };
-byte BUTTON_14_KITCHEN[] = { RELAY_29_KITCHEN, RELAY_30_KITCHEN, RELAY_31_KITCHEN };
-byte BUTTON_15_KITCHEN[] = { RELAY_24, RELAY_25, RELAY_26, RELAY_27, RELAY_28};
+byte BUTTON_14_KITCHEN[] = { RELAY_KITCHEN_SCONCE_1, RELAY_KITCHEN_SCONCE_2 };
+byte BUTTON_15_KITCHEN[] = { RELAY_KITCHEN_SCONCE_3, RELAY_KITCHEN_SCONCE_4 };
 byte BUTTON_16_BATH_2[]  = { RELAY_BATH_2_SCONCE_1 };
 byte BUTTON_17_BATH_2[]  = { RELAY_BATH_2_SCONCE_2 };
-byte BUTTON_18_LIVING[]  = { RELAY_LIVING_SCONCE_1 };
-byte BUTTON_19_LIVING[]  = { RELAY_LIVING_SCONCE_2 };
+byte BUTTON_18_LIVING[]  = { RELAY_TV };
+byte BUTTON_19_LIVING[]  = { RELAY_LIVING_SCONCE_1, RELAY_LIVING_SCONCE_2};
 byte BUTTON_20_MAIN[]    = { RELAY_DINING }; // 6th
-byte BUTTON_21_[]        = {};
-byte BUTTON_22_[]        = {};
-byte BUTTON_23_MAIN[]    = { RELAY_HALL_1 }; // 5th
+byte BUTTON_21_[]        = { }; // not connected
+byte BUTTON_22_[]        = { }; // not connected
+byte BUTTON_23_MAIN[]    = { RELAY_HALL_2 }; // 5th
 byte BUTTON_24_BED_2[]   = { RELAY_BED_2_1 };
 byte BUTTON_25_BED_2[]   = { RELAY_BED_2_2 };
-byte BUTTON_26_MAIN[]    = { RELAY_29_KITCHEN, RELAY_30_KITCHEN, RELAY_31_KITCHEN }; // 1st
-byte BUTTON_27_MAIN[]    = { RELAY_ENTRY_2 }; // 4th
-byte BUTTON_28_MAIN[]    = { RELAY_30_KITCHEN }; // 3rd
-byte BUTTON_29_MAIN[]    = { RELAY_HALL_2 }; // 2nd
-byte BUTTON_30_ENTRY[]   = { RELAY_ENTRY_2 };
+byte BUTTON_26_MAIN[]    = { RELAY_LIVING_1 }; // 1st
+byte BUTTON_27_MAIN[]    = { RELAY_KITCHEN_MAIN_2 }; // 4th
+byte BUTTON_28_MAIN[]    = { RELAY_LIVING_2 }; // 2nd
+byte BUTTON_29_MAIN[]    = { RELAY_KITCHEN_MAIN_1, RELAY_KITCHEN_MAIN_2, RELAY_KITCHEN_MAIN_3 }; // 3rd
+byte BUTTON_30_ENTRY[]   = { RELAY_ENTRY_1, RELAY_ENTRY_2 };
 byte BUTTON_31_ENTRY[]   = { RELAY_HALL_1 };
 
 Button buttonRelays[] = {
@@ -183,7 +183,7 @@ void receive(const MyMessage &message) {
   if (message.type == V_STATUS && message.sensor < NUMBER_OF_RELAYS) {
     state[message.sensor] = message.getBool();
     int pin = message.sensor + FIRST_RELAY_PIN;
-    bool newState = !state[message.sensor];
+    bool newState = state[message.sensor] ? RELAY_ON : RELAY_OFF;
     digitalWrite(pin, newState);
     printDebugToSerial(pin, newState, message);
   }
