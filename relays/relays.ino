@@ -183,7 +183,7 @@ void receive(const MyMessage &message) {
   if (message.type == V_STATUS && message.sensor < NUMBER_OF_RELAYS) {
     state[message.sensor] = message.getBool();
     int pin = message.sensor + FIRST_RELAY_PIN;
-    bool newState = !state[message.sensor];
+    bool newState = state[message.sensor] ? RELAY_ON : RELAY_OFF;
     digitalWrite(pin, newState);
     printDebugToSerial(pin, newState, message);
   }
