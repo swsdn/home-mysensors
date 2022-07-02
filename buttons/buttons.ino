@@ -47,6 +47,7 @@ void loop() {
 
       if (btn->read() == LOW && btn->previousDuration() > 1000) {
         Serial.println(btn->read());
+        Serial.println(btn->currentDuration());
         printDebugToSerial(btn, pin);
       }
     }
