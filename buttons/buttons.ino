@@ -41,6 +41,7 @@ void loop() {
       int pin = i + FIRST_BUTTON_PIN;
       if (btn->pressed()) {
         i2cSend(i);
+        printDebugToSerial(btn, pin);
       }
       if (btn->read() == LOW && btn->currentDuration() > 1000) {
         printDebugToSerial(btn, pin);
