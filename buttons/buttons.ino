@@ -27,6 +27,7 @@ void setup() {
     configure(*buttons[i], pin);
   }
   Serial.begin(115200);
+  Serial.write("Started");
 }
 
 void configure(Bounce2::Button &btn, int pin) {
