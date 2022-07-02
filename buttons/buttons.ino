@@ -27,7 +27,7 @@ void setup() {
     configure(*buttons[i], pin);
   }
   Serial.begin(115200);
-  Serial.write("Started");
+  Serial.println("Started");
 }
 
 void configure(Bounce2::Button &btn, int pin) {
@@ -43,9 +43,10 @@ void loop() {
       int pin = i + FIRST_BUTTON_PIN;
       if (btn->pressed()) {
         i2cSend(i);
-        printDebugToSerial(btn, pin);
       }
-      if (btn->read() == LOW && btn->currentDuration() > 1000) {
+
+      if (btn->read() == LOW && btn->previousDuration() > 1000) {
+        Serial.println(btn->read());
         printDebugToSerial(btn, pin);
       }
     }
@@ -60,7 +61,7 @@ void i2cSend(int button) {
 
 void printDebugToSerial(Bounce2::Button *button, int pin) {
   int value = button->read();
-  long duration = button->currentDuration();
+  long duration = button->previousDuration();
   Serial.print("pin="); Serial.print(pin);
   Serial.print(" value="); Serial.print(value);
   Serial.print(" duration="); Serial.println(duration);
