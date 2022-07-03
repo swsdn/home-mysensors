@@ -95,7 +95,7 @@ byte BUTTON_19_LIVING_MUTATIONS[]  = {
         { RELAY_LIVING_SCONCE_1, RELAY_LIVING_SCONCE_2 },
         { RELAY_LIVING_SCONCE_1 },
         { RELAY_LIVING_SCONCE_2 }
-    }
+    };
 byte BUTTON_20_MAIN[]    = { RELAY_DINING }; // 6th
 byte BUTTON_21_[]        = { }; // not connected
 byte BUTTON_22_[]        = { }; // not connected
