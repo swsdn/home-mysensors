@@ -56,7 +56,7 @@
 #define RELAY_OFF HIGH
 #define SAVE_STATE_INTERVAL 10000
 #define INITIAL_DELAY 5000
-#define VIRTUAL_BUTTON_THRESHOLD 1000
+#define VIRTUAL_BUTTON_THRESHOLD 100
 
 #define I2C_RECEIVER 4
 
@@ -91,11 +91,11 @@ byte BUTTON_16_BATH_2[]  = { RELAY_BATH_2_SCONCE_1 };
 byte BUTTON_17_BATH_2[]  = { RELAY_BATH_2_SCONCE_2 };
 byte BUTTON_18_LIVING[]  = { RELAY_TV };
 byte BUTTON_19_LIVING[]  = { RELAY_LIVING_SCONCE_1, RELAY_LIVING_SCONCE_2 };
-byte BUTTON_19_LIVING_MUTATIONS[]  = {
-        { RELAY_LIVING_SCONCE_1, RELAY_LIVING_SCONCE_2 },
-        { RELAY_LIVING_SCONCE_1 },
-        { RELAY_LIVING_SCONCE_2 }
-    };
+// byte BUTTON_19_LIVING_MUTATIONS[]  = {
+//         { RELAY_LIVING_SCONCE_1, RELAY_LIVING_SCONCE_2 },
+//         { RELAY_LIVING_SCONCE_1 },
+//         { RELAY_LIVING_SCONCE_2 }
+//     };
 byte BUTTON_20_MAIN[]    = { RELAY_DINING }; // 6th
 byte BUTTON_21_[]        = { }; // not connected
 byte BUTTON_22_[]        = { }; // not connected

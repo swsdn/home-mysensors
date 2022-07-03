@@ -11,7 +11,7 @@
 #define NUMBER_OF_BUTTONS      32
 #define FIRST_BUTTON_PIN       22
 #define INITIAL_DELAY       10000
-#define LONG_PRESS_OFFSET    1000
+#define LONG_PRESS_OFFSET     100
 
 #define I2C_RECEIVER 4
 
