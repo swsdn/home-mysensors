@@ -43,15 +43,13 @@ void loop() {
   for (int i = 0 ; i < NUMBER_OF_BUTTONS; i++) {
     Bounce2::Button *btn = buttons[i];
     btn->update();
-//     int pin = i + FIRST_BUTTON_PIN;
     if (btn->pressed()) {
       i2cSend(i);
       longPressState[i] = false;
     }
     if (btn->isPressed() && !longPressState[i] && btn->currentDuration() > 1000) {
       longPressState[i] = true;
-      printDebugToSerial(btn, i + LONG_PRESS_OFFSET);
-//       i2cSend(i + LONG_PRESS_OFFSET);
+      i2cSend(i + LONG_PRESS_OFFSET);
     }
   }
 }

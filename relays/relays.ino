@@ -56,6 +56,7 @@
 #define RELAY_OFF HIGH
 #define SAVE_STATE_INTERVAL 10000
 #define INITIAL_DELAY 5000
+#define VIRTUAL_BUTTON_THRESHOLD 1000
 
 #define I2C_RECEIVER 4
 
@@ -66,6 +67,7 @@ long saveStateTime = millis();
 struct Button {
     byte *relays;
     int numElements;
+    int mutation;
 };
 
 // in comments physical buttons starting from left
@@ -88,7 +90,12 @@ byte BUTTON_15_KITCHEN[] = { RELAY_KITCHEN_SCONCE_3, RELAY_KITCHEN_SCONCE_4 };
 byte BUTTON_16_BATH_2[]  = { RELAY_BATH_2_SCONCE_1 };
 byte BUTTON_17_BATH_2[]  = { RELAY_BATH_2_SCONCE_2 };
 byte BUTTON_18_LIVING[]  = { RELAY_TV };
-byte BUTTON_19_LIVING[]  = { RELAY_LIVING_SCONCE_1, RELAY_LIVING_SCONCE_2};
+byte BUTTON_19_LIVING[]  = { RELAY_LIVING_SCONCE_1, RELAY_LIVING_SCONCE_2 };
+byte BUTTON_19_LIVING_MUTATIONS[]  = {
+        { RELAY_LIVING_SCONCE_1, RELAY_LIVING_SCONCE_2 },
+        { RELAY_LIVING_SCONCE_1 },
+        { RELAY_LIVING_SCONCE_2 }
+    }
 byte BUTTON_20_MAIN[]    = { RELAY_DINING }; // 6th
 byte BUTTON_21_[]        = { }; // not connected
 byte BUTTON_22_[]        = { }; // not connected
@@ -103,38 +110,38 @@ byte BUTTON_30_ENTRY[]   = { RELAY_ENTRY_1, RELAY_ENTRY_2 };
 byte BUTTON_31_ENTRY[]   = { RELAY_HALL_1 };
 
 Button buttonRelays[] = {
-    { BUTTON_00_BATH_1,  NUM_ELEMENTS(BUTTON_00_BATH_1) },
-    { BUTTON_01_BATH_1,  NUM_ELEMENTS(BUTTON_01_BATH_1) },
-    { BUTTON_02_BED_1,   NUM_ELEMENTS(BUTTON_02_BED_1) },
-    { BUTTON_03_BED_1,   NUM_ELEMENTS(BUTTON_03_BED_1) },
-    { BUTTON_04_BED_1,   NUM_ELEMENTS(BUTTON_04_BED_1) },
-    { BUTTON_05_BED_1,   NUM_ELEMENTS(BUTTON_05_BED_1) },
-    { BUTTON_06_BED_3,   NUM_ELEMENTS(BUTTON_06_BED_3) },
-    { BUTTON_07_BED_3,   NUM_ELEMENTS(BUTTON_07_BED_3) },
-    { BUTTON_08_BATH_1,  NUM_ELEMENTS(BUTTON_08_BATH_1) },
-    { BUTTON_09_BATH_1,  NUM_ELEMENTS(BUTTON_09_BATH_1) },
-    { BUTTON_10_BED_1,   NUM_ELEMENTS(BUTTON_10_BED_1) },
-    { BUTTON_11_BED_1,   NUM_ELEMENTS(BUTTON_11_BED_1) },
-    { BUTTON_12_BATH_2,  NUM_ELEMENTS(BUTTON_12_BATH_2) },
-    { BUTTON_13_BATH_2,  NUM_ELEMENTS(BUTTON_13_BATH_2) },
-    { BUTTON_14_KITCHEN, NUM_ELEMENTS(BUTTON_14_KITCHEN) },
-    { BUTTON_15_KITCHEN, NUM_ELEMENTS(BUTTON_15_KITCHEN) },
-    { BUTTON_16_BATH_2,  NUM_ELEMENTS(BUTTON_16_BATH_2) },
-    { BUTTON_17_BATH_2,  NUM_ELEMENTS(BUTTON_17_BATH_2) },
-    { BUTTON_18_LIVING,  NUM_ELEMENTS(BUTTON_18_LIVING) },
-    { BUTTON_19_LIVING,  NUM_ELEMENTS(BUTTON_19_LIVING) },
-    { BUTTON_20_MAIN,    NUM_ELEMENTS(BUTTON_20_MAIN) },
-    { BUTTON_21_,        NUM_ELEMENTS(BUTTON_21_) },
-    { BUTTON_22_,        NUM_ELEMENTS(BUTTON_22_) },
-    { BUTTON_23_MAIN,    NUM_ELEMENTS(BUTTON_23_MAIN) },
-    { BUTTON_24_BED_2,   NUM_ELEMENTS(BUTTON_24_BED_2) },
-    { BUTTON_25_BED_2,   NUM_ELEMENTS(BUTTON_25_BED_2) },
-    { BUTTON_26_MAIN,    NUM_ELEMENTS(BUTTON_26_MAIN) },
-    { BUTTON_27_MAIN,    NUM_ELEMENTS(BUTTON_27_MAIN) },
-    { BUTTON_28_MAIN,    NUM_ELEMENTS(BUTTON_28_MAIN) },
-    { BUTTON_29_MAIN,    NUM_ELEMENTS(BUTTON_29_MAIN) },
-    { BUTTON_30_ENTRY,   NUM_ELEMENTS(BUTTON_30_ENTRY) },
-    { BUTTON_31_ENTRY,   NUM_ELEMENTS(BUTTON_31_ENTRY) }
+    { BUTTON_00_BATH_1,  NUM_ELEMENTS(BUTTON_00_BATH_1), 0 },
+    { BUTTON_01_BATH_1,  NUM_ELEMENTS(BUTTON_01_BATH_1), 0 },
+    { BUTTON_02_BED_1,   NUM_ELEMENTS(BUTTON_02_BED_1), 0 },
+    { BUTTON_03_BED_1,   NUM_ELEMENTS(BUTTON_03_BED_1), 0 },
+    { BUTTON_04_BED_1,   NUM_ELEMENTS(BUTTON_04_BED_1), 0 },
+    { BUTTON_05_BED_1,   NUM_ELEMENTS(BUTTON_05_BED_1), 0 },
+    { BUTTON_06_BED_3,   NUM_ELEMENTS(BUTTON_06_BED_3), 0 },
+    { BUTTON_07_BED_3,   NUM_ELEMENTS(BUTTON_07_BED_3), 0 },
+    { BUTTON_08_BATH_1,  NUM_ELEMENTS(BUTTON_08_BATH_1), 0 },
+    { BUTTON_09_BATH_1,  NUM_ELEMENTS(BUTTON_09_BATH_1), 0 },
+    { BUTTON_10_BED_1,   NUM_ELEMENTS(BUTTON_10_BED_1), 0 },
+    { BUTTON_11_BED_1,   NUM_ELEMENTS(BUTTON_11_BED_1), 0 },
+    { BUTTON_12_BATH_2,  NUM_ELEMENTS(BUTTON_12_BATH_2), 0 },
+    { BUTTON_13_BATH_2,  NUM_ELEMENTS(BUTTON_13_BATH_2), 0 },
+    { BUTTON_14_KITCHEN, NUM_ELEMENTS(BUTTON_14_KITCHEN), 0 },
+    { BUTTON_15_KITCHEN, NUM_ELEMENTS(BUTTON_15_KITCHEN), 0 },
+    { BUTTON_16_BATH_2,  NUM_ELEMENTS(BUTTON_16_BATH_2), 0 },
+    { BUTTON_17_BATH_2,  NUM_ELEMENTS(BUTTON_17_BATH_2), 0 },
+    { BUTTON_18_LIVING,  NUM_ELEMENTS(BUTTON_18_LIVING), 0 },
+    { BUTTON_19_LIVING,  NUM_ELEMENTS(BUTTON_19_LIVING), 0 },
+    { BUTTON_20_MAIN,    NUM_ELEMENTS(BUTTON_20_MAIN), 0 },
+    { BUTTON_21_,        NUM_ELEMENTS(BUTTON_21_), 0 },
+    { BUTTON_22_,        NUM_ELEMENTS(BUTTON_22_), 0 },
+    { BUTTON_23_MAIN,    NUM_ELEMENTS(BUTTON_23_MAIN), 0 },
+    { BUTTON_24_BED_2,   NUM_ELEMENTS(BUTTON_24_BED_2), 0 },
+    { BUTTON_25_BED_2,   NUM_ELEMENTS(BUTTON_25_BED_2), 0 },
+    { BUTTON_26_MAIN,    NUM_ELEMENTS(BUTTON_26_MAIN), 0 },
+    { BUTTON_27_MAIN,    NUM_ELEMENTS(BUTTON_27_MAIN), 0 },
+    { BUTTON_28_MAIN,    NUM_ELEMENTS(BUTTON_28_MAIN), 0 },
+    { BUTTON_29_MAIN,    NUM_ELEMENTS(BUTTON_29_MAIN), 0 },
+    { BUTTON_30_ENTRY,   NUM_ELEMENTS(BUTTON_30_ENTRY), 0 },
+    { BUTTON_31_ENTRY,   NUM_ELEMENTS(BUTTON_31_ENTRY), 0 }
 };
 
 void before() { 
@@ -185,7 +192,7 @@ void receive(const MyMessage &message) {
     int pin = message.sensor + FIRST_RELAY_PIN;
     bool newState = state[message.sensor] ? RELAY_ON : RELAY_OFF;
     digitalWrite(pin, newState);
-    printDebugToSerial(pin, newState, message);
+    //printDebugToSerial(pin, newState, message);
   }
 }
 
@@ -201,14 +208,23 @@ void printDebugToSerial(int pin, bool newState, MyMessage message) {
 
 void i2cReceive(int howMany) {
   int buttonId = Wire.read();
+  if (buttonId < VIRTUAL_BUTTON_THRESHOLD) {
+    updateRegularButton(buttonId);
+  } else {
+    buttonId = buttonId - VIRTUAL_BUTTON_THRESHOLD;
+    updateRegularButton(buttonId);
+  }
+}
+
+void updateRegularButton(int buttonId) {
   Button button = buttonRelays[buttonId];
   for (int i = 0; i < button.numElements; i++) {
-    byte relay = button.relays[i];
-    state[relay] = !state[relay];
-    int pin = relay + FIRST_RELAY_PIN;
-    send(messages[relay]->set(state[relay]));
-    digitalWrite(pin, state[relay] ? RELAY_ON : RELAY_OFF);
-    //printDebugToSerial(pin, buttonId, relay, state[relay]);
+      byte relay = button.relays[i];
+      state[relay] = !state[relay];
+      int pin = relay + FIRST_RELAY_PIN;
+      send(messages[relay]->set(state[relay]));
+      digitalWrite(pin, state[relay] ? RELAY_ON : RELAY_OFF);
+      printDebugToSerial(pin, buttonId, relay, state[relay]);
   }
 }
 
