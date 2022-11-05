@@ -91,11 +91,6 @@ byte BUTTON_16_BATH_2[]  = { RELAY_BATH_2_SCONCE_1 };
 byte BUTTON_17_BATH_2[]  = { RELAY_BATH_2_SCONCE_2 };
 byte BUTTON_18_LIVING[]  = { RELAY_TV };
 byte BUTTON_19_LIVING[]  = { RELAY_LIVING_SCONCE_1, RELAY_LIVING_SCONCE_2 };
-// byte BUTTON_19_LIVING_MUTATIONS[]  = {
-//         { RELAY_LIVING_SCONCE_1, RELAY_LIVING_SCONCE_2 },
-//         { RELAY_LIVING_SCONCE_1 },
-//         { RELAY_LIVING_SCONCE_2 }
-//     };
 byte BUTTON_20_MAIN[]    = { RELAY_DINING }; // 6th
 byte BUTTON_21_[]        = { }; // not connected
 byte BUTTON_22_[]        = { }; // not connected
@@ -149,7 +144,7 @@ void before() {
     pinMode(pin, OUTPUT);   
     messages[relay] = new MyMessage(relay, V_STATUS);
     state[relay] = loadState(relay);
-    digitalWrite(pin, state[relay] ? RELAY_ON : RELAY_OFF);
+    digitalWrite(pin, !state[relay] ? RELAY_ON : RELAY_OFF);
   }
 }
 
