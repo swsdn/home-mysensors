@@ -91,11 +91,6 @@ byte BUTTON_16_BATH_2[]  = { RELAY_BATH_2_SCONCE_1 };
 byte BUTTON_17_BATH_2[]  = { RELAY_BATH_2_SCONCE_2 };
 byte BUTTON_18_LIVING[]  = { RELAY_TV };
 byte BUTTON_19_LIVING[]  = { RELAY_LIVING_SCONCE_1, RELAY_LIVING_SCONCE_2 };
-// byte BUTTON_19_LIVING_MUTATIONS[]  = {
-//         { RELAY_LIVING_SCONCE_1, RELAY_LIVING_SCONCE_2 },
-//         { RELAY_LIVING_SCONCE_1 },
-//         { RELAY_LIVING_SCONCE_2 }
-//     };
 byte BUTTON_20_MAIN[]    = { RELAY_DINING }; // 6th
 byte BUTTON_21_[]        = { }; // not connected
 byte BUTTON_22_[]        = { }; // not connected
@@ -209,14 +204,14 @@ void printDebugToSerial(int pin, bool newState, MyMessage message) {
 void i2cReceive(int howMany) {
   int buttonId = Wire.read();
   if (buttonId < VIRTUAL_BUTTON_THRESHOLD) {
-    updateRegularButton(buttonId);
+    updateRegularButton(buttonId, false);
   } else {
     buttonId = buttonId - VIRTUAL_BUTTON_THRESHOLD;
-    updateRegularButton(buttonId);
+    updateRegularButton(buttonId, true);
   }
 }
 
-void updateRegularButton(int buttonId) {
+void updateRegularButton(int buttonId, bool isVirtual) {
   Button button = buttonRelays[buttonId];
   for (int i = 0; i < button.numElements; i++) {
       byte relay = button.relays[i];
@@ -224,18 +219,21 @@ void updateRegularButton(int buttonId) {
       int pin = relay + FIRST_RELAY_PIN;
       send(messages[relay]->set(state[relay]));
       digitalWrite(pin, state[relay] ? RELAY_ON : RELAY_OFF);
-      printDebugToSerial(pin, buttonId, relay, state[relay]);
+      printDebugToSerial(pin, buttonId, relay, state[relay], isVirtual);
   }
 }
 
-void printDebugToSerial(int pin, int button, int relay, bool newState) {
-  Serial.print("pin ");
+void printDebugToSerial(int pin, int button, int relay, bool newState, bool isVirtual) {
+  Serial.print("pin:");
   Serial.print(pin);
-  Serial.print(" bytes,");
-  Serial.print(" button ");
+  Serial.print(" bytes:");
+  Serial.print(" button:");
   Serial.print(button);
-  Serial.print(" sensor ");
+  Serial.print(" sensor:");
   Serial.print(relay);
-  Serial.print(" newState ");
-  Serial.println(newState);
+  Serial.print(" newState:");
+  Serial.print(newState);
+  Serial.print(" isVirtual:");
+  Serial.print(isVirtual);
+  Serial.println();
 }
