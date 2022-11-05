@@ -204,10 +204,10 @@ void printDebugToSerial(int pin, bool newState, MyMessage message) {
 void i2cReceive(int howMany) {
   int buttonId = Wire.read();
   if (buttonId < VIRTUAL_BUTTON_THRESHOLD) {
-    updateRegularButton(buttonId);
+    updateRegularButton(buttonId, false);
   } else {
     buttonId = buttonId - VIRTUAL_BUTTON_THRESHOLD;
-    updateRegularButton(buttonId);
+    updateRegularButton(buttonId, true);
   }
 }
 
@@ -223,14 +223,17 @@ void updateRegularButton(int buttonId) {
   }
 }
 
-void printDebugToSerial(int pin, int button, int relay, bool newState) {
-  Serial.print("pin ");
+void printDebugToSerial(int pin, int button, int relay, bool newState, bool isVirtual) {
+  Serial.print("pin:");
   Serial.print(pin);
-  Serial.print(" bytes,");
-  Serial.print(" button ");
+  Serial.print(" bytes:");
+  Serial.print(" button:");
   Serial.print(button);
-  Serial.print(" sensor ");
+  Serial.print(" sensor:");
   Serial.print(relay);
-  Serial.print(" newState ");
-  Serial.println(newState);
+  Serial.print(" newState:");
+  Serial.print(newState);
+  Serial.print(" isVirtual:");
+  Serial.print(isVirtual);
+  Serial.println();
 }
