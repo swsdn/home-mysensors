@@ -144,7 +144,7 @@ void before() {
     pinMode(pin, OUTPUT);   
     messages[relay] = new MyMessage(relay, V_STATUS);
     state[relay] = loadState(relay);
-    digitalWrite(pin, !state[relay] ? RELAY_ON : RELAY_OFF);
+    digitalWrite(pin, state[relay] ? RELAY_ON : RELAY_OFF);
   }
 }
 
