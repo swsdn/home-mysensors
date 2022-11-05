@@ -211,7 +211,7 @@ void i2cReceive(int howMany) {
   }
 }
 
-void updateRegularButton(int buttonId) {
+void updateRegularButton(int buttonId, bool isVirtual) {
   Button button = buttonRelays[buttonId];
   for (int i = 0; i < button.numElements; i++) {
       byte relay = button.relays[i];
@@ -219,7 +219,7 @@ void updateRegularButton(int buttonId) {
       int pin = relay + FIRST_RELAY_PIN;
       send(messages[relay]->set(state[relay]));
       digitalWrite(pin, state[relay] ? RELAY_ON : RELAY_OFF);
-      printDebugToSerial(pin, buttonId, relay, state[relay]);
+      printDebugToSerial(pin, buttonId, relay, state[relay], isVirtual);
   }
 }
 
