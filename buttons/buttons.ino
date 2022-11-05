@@ -27,7 +27,7 @@ void setup() {
   for (int i = 0 ; i < NUMBER_OF_BUTTONS; i++) {
     int pin = i + FIRST_BUTTON_PIN;
     configure(*buttons[i], pin);
-    longPressState[i] = false;
+    longPressState[i] = true; // keep this true to prevent light flip on power on
   }
   Serial.begin(115200);
   Serial.println("Started");
@@ -37,7 +37,6 @@ void configure(Bounce2::Button &btn, int pin) {
   btn.attach(pin, INPUT_PULLUP);
   btn.interval(5);
   btn.setPressedState(LOW);
-  btn.update();
 }
 
 void loop() {
