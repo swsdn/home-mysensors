@@ -37,6 +37,7 @@ void configure(Bounce2::Button &btn, int pin) {
   btn.attach(pin, INPUT_PULLUP);
   btn.interval(5);
   btn.setPressedState(LOW);
+  btn.update();
 }
 
 void loop() {
