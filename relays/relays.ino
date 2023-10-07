@@ -52,8 +52,6 @@
 
 #define FIRST_RELAY_PIN  22
 #define NUMBER_OF_RELAYS 32
-#define RELAY_ON LOW
-#define RELAY_OFF HIGH
 #define SAVE_STATE_INTERVAL 10000
 #define INITIAL_DELAY 5000
 #define VIRTUAL_BUTTON_THRESHOLD 100
@@ -77,8 +75,8 @@ byte BUTTON_02_BED_1[]   = { RELAY_BED_1_MAIN_1 };
 byte BUTTON_03_BED_1[]   = { RELAY_BED_1_MAIN_2 };
 byte BUTTON_04_BED_1[]   = { RELAY_BED_1_SCONCE_1 };
 byte BUTTON_05_BED_1[]   = { RELAY_BED_1_SCONCE_2 };
-byte BUTTON_06_BED_3[]   = { RELAY_BED_3_1, RELAY_BED_3_2 };
-byte BUTTON_07_BED_3[]   = { RELAY_BED_3_1, RELAY_BED_3_2 };
+byte BUTTON_06_BED_3[]   = { RELAY_BED_3_1 };
+byte BUTTON_07_BED_3[]   = { RELAY_BED_3_2 };
 byte BUTTON_08_BATH_1[]  = { RELAY_BATH_1_SCONCE_1 };
 byte BUTTON_09_BATH_1[]  = { RELAY_BATH_1_SCONCE_2 };
 byte BUTTON_10_BED_1[]   = { RELAY_BED_1_MAIN_1 };
@@ -139,12 +137,19 @@ Button buttonRelays[] = {
     { BUTTON_31_ENTRY,   NUM_ELEMENTS(BUTTON_31_ENTRY), 0 }
 };
 
+int stateToBoardSwitch(bool relayState, int relay) {
+    if (relay >=8 && relay <= 15) { // is board 2
+        return relayState ? HIGH : LOW;
+    }
+    return relayState ? LOW : HIGH;
+}
+
 void before() { 
   for (int relay = 0, pin = FIRST_RELAY_PIN; relay < NUMBER_OF_RELAYS; relay++, pin++) {
     pinMode(pin, OUTPUT);   
     messages[relay] = new MyMessage(relay, V_STATUS);
     state[relay] = loadState(relay);
-    digitalWrite(pin, state[relay] ? RELAY_ON : RELAY_OFF);
+    digitalWrite(pin, stateToBoardSwitch(state[relay], relay));
   }
 }
 
@@ -185,8 +190,7 @@ void receive(const MyMessage &message) {
   if (message.type == V_STATUS && message.sensor < NUMBER_OF_RELAYS) {
     state[message.sensor] = message.getBool();
     int pin = message.sensor + FIRST_RELAY_PIN;
-    bool newState = state[message.sensor] ? RELAY_ON : RELAY_OFF;
-    digitalWrite(pin, newState);
+    digitalWrite(pin, stateToBoardSwitch(state[message.sensor], message.sensor));
     //printDebugToSerial(pin, newState, message);
   }
 }
@@ -218,7 +222,7 @@ void updateRegularButton(int buttonId, bool isVirtual) {
       state[relay] = !state[relay];
       int pin = relay + FIRST_RELAY_PIN;
       send(messages[relay]->set(state[relay]));
-      digitalWrite(pin, state[relay] ? RELAY_ON : RELAY_OFF);
+      digitalWrite(pin, stateToBoardSwitch(state[relay], relay));
       printDebugToSerial(pin, buttonId, relay, state[relay], isVirtual);
   }
 }
