@@ -222,11 +222,10 @@ void i2cReceive(int howMany) {
 }
 
 void updateVirtualButton(int buttonId) {
-  Button button = buttonRelays[buttonId];
-  MyMessage *msg = virtualButtonMessages[buttonId];
+  MyMessage *msg = virtualButtonMessages[buttonId - VIRTUAL_BUTTON_THRESHOLD];
   boolean state = msg->getBool();
   send(msg->set(!state));
-  // printDebugToSerial(-1, buttonId, -1, msg->getBool(), true);
+  // printDebugToSerial(-1, msg->getSensor(), -1, msg->getBool(), true);
 }
 
 void updateRegularButton(int buttonId) {
