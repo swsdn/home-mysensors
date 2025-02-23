@@ -46,10 +46,12 @@ void loop() {
     if (btn->pressed()) {
       i2cSend(i);
       longPressState[i] = false;
+      printDebugToSerial(btn, i);
     }
     if (btn->isPressed() && !longPressState[i] && btn->currentDuration() > 1000) {
       longPressState[i] = true;
       i2cSend(i + LONG_PRESS_OFFSET);
+      printDebugToSerial(btn, i + LONG_PRESS_OFFSET);
     }
   }
 }
@@ -64,6 +66,5 @@ void printDebugToSerial(Bounce2::Button *button, int buttonNo) {
   int value = button->read();
   long duration = button->currentDuration();
   Serial.print("button="); Serial.print(buttonNo);
-  Serial.print(" value="); Serial.print(value);
   Serial.print(" duration="); Serial.println(duration);
 }
